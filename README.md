@@ -1,4 +1,4 @@
-# Group 01 - {Short snappy Title of your project}
+# Group 01 - Football Data
 
 - Football Data: Expected Goals and Other Metrics
 
@@ -8,6 +8,7 @@ Details for Milestone are available on Canvas (left sidebar, Course Project) or 
 
 ## Describe your topic/interest in about 150-200 words
 
+We wish to use these metrics to analyse and predict outcomes of football games. Each team has its own playstyle which can be narrowed down to either offensive or defensive. We want to understand which playstyle is more effective in each of the top 5 european leagues. Additionally, upsets are another part of football. Using this comprehensive dataset we also wish to find out what factors may cause these upsets. Hence, we have two main research questions: What type of playstyle (offensive/defensive) leads to most success in each league (Top 5 European Leagues)? Why do teams with the highest xG(expected goals) still end up not winning the league and which factors cause the upset? This data can be displayed in the form of a dashboard because it involves variables and metrics that have numerical values. These values are best represented in the form of graphs and charts.
 
 ## Describe your dataset in about 150-200 words
 
@@ -16,8 +17,9 @@ The nail-biting ending of the Euro Final reminded us why football is known as th
 ## Team Members
 
 - Lakshay Karnwal: I am a 3rd year Computer Science student who loves playing the guitar.
-- Person 3: one sentence about you!
+- Chinmay Jain: I am a 2nd year Management student who's never seen campus and supports FC Barcelona.
 
 ## References
 
-{Add your stuff here}
+https://www.kaggle.com/slehkyi/extended-football-stats-for-european-leagues-xg
+https://understat.com/
