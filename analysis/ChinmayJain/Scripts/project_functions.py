@@ -89,8 +89,8 @@ def weighted_av(path):
     #We are calculating an Offensive and Defensive Weighted Average and adding these values as a new column
     #Offensive Metrics: xG, ppda_coef, deep
     #Defensive Metrics: xGA, oppda_coef, deep_allowed
-    df_av['Offensive W_Average'] = 0.5*df_av['xG'] + 0.25*df_av['ppda_coef'] + 0.25*df_av['deep']
-    df_av['Defensive W_Average'] = 0.45*df_av['xGA'] + 0.35*df_av['oppda_coef'] + 0.2*df_av['deep_allowed']
+    df_av['Offensive W_Average'] = 0.45*df_av['xG'] + 0.25*df_av['ppda_coef'] + 0.3*df_av['deep']
+    df_av['Defensive W_Average'] = 0.4*df_av['xGA'] + 0.3*df_av['oppda_coef'] + 0.3*df_av['deep_allowed']
     
     #drop the rest of the columns that we don't need, just keep the weighted averages
     df_av = df_av.drop(columns = ['pts', 'xG', 'xGA', 'ppda_coef', 'oppda_coef', 'deep', 'deep_allowed'])
@@ -106,8 +106,8 @@ def weighted_av(path):
     #We are calculating an Offensive and Defensive Weighted Average and adding these values as a new column
     #Offensive Metrics: xG, ppda_coef, deep
     #Defensive Metrics: xGA, oppda_coef, deep_allowed
-    df_top['Offensive W_Average'] = 0.5*df_top['xG'] + 0.25*df_top['ppda_coef'] + 0.25*df_top['deep']
-    df_top['Defensive W_Average'] = 0.45*df_top['xGA'] + 0.35*df_top['oppda_coef'] + 0.2*df_top['deep_allowed']
+    df_top['Offensive W_Average'] = 0.45*df_top['xG'] + 0.25*df_top['ppda_coef'] + 0.3*df_top['deep']
+    df_top['Defensive W_Average'] = 0.4*df_top['xGA'] + 0.3*df_top['oppda_coef'] + 0.3*df_top['deep_allowed']
     
     #drop the rest of the columns that we don't need, just keep the weighted averages
     df_top = df_top.drop(columns = ['pts', 'xG', 'xGA', 'ppda_coef', 'oppda_coef', 'deep', 'deep_allowed'])
