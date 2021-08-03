@@ -41,11 +41,7 @@ def load_and_process(path):
 def weighted_avg(league,year,path):
     
     df= filter_data_set(league,year,path)
-    #display(df)
-    #df= df.drop(columns=['pts','year','matches','pts_per_game','conceded','position','team','league','xpts_diff','xG_diff','xG','xGA','xpts','scored'])
 
-    #avg= ((df['pressure'])*0.18 + (df['scored'])*0.30 + (df['xG'])*0.28 + (df['deep'])*0.24)
-    #avg= ((df['pressure'])*0.25 + (df['xG'])*0.40 + (df['deep'])*0.35)
     avg= ((df['pressure'])*0.24 + (df['xG'])*0.37 + (df['scored'])*0.39)
     team= df['team']
     position= df['position']
@@ -60,8 +56,6 @@ def weighted_avg(league,year,path):
     plt.show()
     
     avg=((df['oppo_pressure'])*0.28 + (df['xGA'])*0.34 + (df['conceded'])*0.38)
-    #avg=((df['oppo_pressure'])*0.22 + (df['xGA'])*0.27 + (df['conceded'])*0.29 + (df['deep_allowed'])*0.22)
-    #avg=((df['oppo_pressure'])*0.31 + (df['xGA'])*0.38 + (df['deep_allowed'])*0.31)
     data=list(zip(team, position, avg))
     df3=pd.DataFrame(data,columns=['team','position','avg'])
     df4=df3.style.set_caption('Weighted avg. of opponent'+'s effect on team')
@@ -71,8 +65,6 @@ def weighted_avg(league,year,path):
     display(df4)
     plt.show()
     
-    #df1.style.apply(lambda x: ["text-align:right"]*len(x))
-    #df2.style.apply(lambda x: ["text-align:right"]*len(x))
     net=df1['avg']-df3['avg']
     data=list(zip(team, position, net))
     df3=pd.DataFrame(data,columns=['team','position','net'])
@@ -108,11 +100,8 @@ def filter_data_set(league, year, chart_value, path):
     xG.append(a)
     for i in range(0,19):
         xG.append(a)
-    #print(xG)
 
     df4=df2[df2['xG'].values >= xG]
-    #print(df2['xG'])
-    #display(df4)
         
     return df4
 
@@ -131,49 +120,14 @@ def filter_data_set(league, year, path):
     xG.append(a)
     for i in range(0,19):
         xG.append(a)
-    #print(xG)
 
     df4=df2[df2['xG'].values >= xG]
-    #print(df2['xG'])
     display(df4)
         
     return df4
 
 def bar_plot(ax, data, colors=None, total_width=0.8, single_width=1, legend=True, chart_value=None):
-    """Draws a bar plot with multiple bars per data point.
-
-    Parameters
-    ----------
-    ax : matplotlib.pyplot.axis
-        The axis we want to draw our plot on.
-
-    data: dictionary
-        A dictionary containing the data we want to plot. Keys are the names of the
-        data, the items is a list of the values.
-
-        Example:
-        data = {
-            "x":[1,2,3],
-            "y":[1,2,3],
-            "z":[1,2,3],
-        }
-
-    colors : array-like, optional
-        A list of colors which are used for the bars. If None, the colors
-        will be the standard matplotlib color cyle. (default: None)
-
-    total_width : float, optional, default: 0.8
-        The width of a bar group. 0.8 means that 80% of the x-axis is covered
-        by bars and 20% will be spaces between the bars.
-
-    single_width: float, optional, default: 1
-        The relative width of a single bar within a group. 1 means the bars
-        will touch eachother within a group, values less than 1 will make
-        these bars thinner.
-
-    legend: bool, optional, default: True
-        If this is set to true, a legend will be added to the axis.
-    """
+    
     list=[]
     x_pos= data['team']
     for i in range(0,len(data['position'])):
@@ -251,6 +205,3 @@ def data_filter(pos, path):
     df2 = df1[df1['position']==pos]
     
     return df2
-
-#load_and_process("../../data/raw/understat.com.csv")
-#league_filter("EPL",2014)
