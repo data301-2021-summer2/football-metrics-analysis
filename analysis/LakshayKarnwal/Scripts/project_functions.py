@@ -6,134 +6,168 @@ import matplotlib.pyplot as plt
 def load_and_process(path):
 
     # Method Chain 1 (Load data and deal with missing data)
-
     df1 = (
         pd.read_csv(path
-        )
-        .dropna(axis=0 #new line added
-        )
-        #.shape(
-        
+        )#reads data file from the given path
+        .dropna(axis=0
+        )#drop na values
     )
 
     # Method Chain 2 (Create new columns, drop others, and do processing)
-
     df2 = (
           df1
     .assign(pts_per_game = lambda df: df['pts']/df['matches']
-    )
+    )#adds a new column by calculating the points per game
     .drop(columns=['xGA_diff','npxG','npxGD','npxGA','wins','draws','loses','xpts_diff','xG_diff','deep','deep_allowed']
-    )
+    )#drops 'xGA_diff','npxG','npxGD','npxGA','wins','draws','loses','xpts_diff','xG_diff','deep','deep_allowed' columns
     .rename(columns={'Unnamed: 0' :'league','Unnamed: 1':'year','missed':'conceded','ppda_coef':'pressure','oppda_coef':'oppo_pressure'}
-    )
+    )#renames few columns to increase readability
     .set_index('league'
-    )
+    )#setting index to league to drop 'RFPL' league
     .drop('RFPL'
-    )
+    )#drops 'RFL'
     .reset_index(
+    )#resets index to numbers
     )
-     )
 
-    # Make sure to return the latest dataframe
-
+    #function returns the latest dataframe
     return df2
 
+#method to plot 3d pie charts
+def plot_pie(values, labels):
+    #adds the explode effect to the 3d pie chart
+    explode = (0, 0.1, 0)
+    
+    #add colors
+    colors = ['#ff9999','#99ff99', '#B7C3F3', '#DD7596']
+    
+    #set up the pie chart by using the passed parameters of values and labels
+    fig1, ax1 = plt.subplots()
+    ax1.pie(values, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%',shadow=True, startangle=30)
+    
+    # Equal aspect ratio ensures that pie is drawn as a circle
+    ax1.axis('equal')
+    
+    #print the 3d pie chart
+    plt.tight_layout()
+    
+
+#method to find out the weighted team's effect, opponent's effect , and net effect of the teams
 def weighted_avg(league,year,path):
     
+    #setting up different colors for different graphs
+    colors1 = ['#ff9999','#99ff99', '#B7C3F3']
+    colors2 = ['#99ff99']
+    colors3 = ['#B7C3F3']
+    
+    #method call to show only those teams from a specific year and league that have higher xG than the winning team
     df= filter_data_set(league,year,path)
 
+    #according to corelation matrix, weight of pressure, xG, scored is 0.24, 0.37, 0.39 respectively
+    #calculates the weighted attacking average
     avg= ((df['pressure'])*0.24 + (df['xG'])*0.37 + (df['scored'])*0.39)
+    
+    #creates a new dataframe along with the required teams
     team= df['team']
     position= df['position']
-    
-    data = list(zip(team, position, avg))
+    data = list(zip(team, position, avg)) 
     df1= pd.DataFrame(data,columns=['team','position','avg'])
-    df2=df1.style.set_table_attributes("style='display:inline'").set_caption('Weighted avg. of team'+'s effect on opponent')
-    fig, ax = plt.subplots()
-    bar_plot(ax, df1, total_width=0.3, single_width=0.7, chart_value=3)
     
+    #changes labels of the graph to increase readability
+    df2=df1.style.set_table_attributes("style='display:inline'").set_caption('Weighted avg. of team'+'s effect on opponent')
+    
+    #plots the bar graph from the dataframe
+    fig, ax = plt.subplots() 
+    bar_plot(ax, df1, total_width=0.3, single_width=0.7, chart_value=3,colors=colors1)
+   
+    #displays the graph
     display(df2)
     plt.show()
     
+    #according to corelation matrix, weight of oppo_pressure, xGA, conceded is 0.28, 0.34, 0.38 respectively
     avg=((df['oppo_pressure'])*0.28 + (df['xGA'])*0.34 + (df['conceded'])*0.38)
+    
+    #creates a new dataframe along with the required teams
     data=list(zip(team, position, avg))
     df3=pd.DataFrame(data,columns=['team','position','avg'])
-    df4=df3.style.set_caption('Weighted avg. of opponent'+'s effect on team')
-    fig, ax = plt.subplots()
-    bar_plot(ax, df3, total_width=0.3, single_width=0.7, chart_value=3)
     
+    #changes labels of the graph to increase readability
+    df4=df3.style.set_caption('Weighted avg. of opponent'+'s effect on team')
+    
+    #plots the bar graph from the dataframe
+    fig, ax = plt.subplots()
+    bar_plot(ax, df3, total_width=0.3, single_width=0.7, chart_value=3,colors=colors2)
+    
+    #displays the graph
     display(df4)
     plt.show()
     
+    #plotting for the net average (team's effect - opponent's effect)
+    #creates a new dataframe along with the required teams
     net=df1['avg']-df3['avg']
     data=list(zip(team, position, net))
     df3=pd.DataFrame(data,columns=['team','position','net'])
-    df4=df3.style.set_table_attributes("style='display:inline'").set_caption('Net effect of each team')
-    fig, ax = plt.subplots()
-    bar_plot(ax, df3, total_width=0.3, single_width=0.7, chart_value=3)
     
+    #changes labels of the graph to increase readability
+    df4=df3.style.set_table_attributes("style='display:inline'").set_caption('Net effect of each team')
+    
+    #plots the bar graph from the dataframe
+    fig, ax = plt.subplots()
+    bar_plot(ax, df3, total_width=0.3, single_width=0.7, chart_value=3, colors=colors3)
+    
+    #displays the graph
     display(df4)
     plt.show()
     
 
+#method to drop columns and keep those variables that are involved in the team's effect on opponent calculation
 def team_effect_parameters(df):
     df=df.drop(columns=['pts','year','matches','pts_per_game','league','conceded','oppo_pressure','xpts','xGA'])
     return df
 
+
+#method to drop columns and keep those variables that are involved in the opponent's effect on team calculation
 def opponent_effect_parameters(df):
     df= df.drop(columns=['pts','year','matches','pts_per_game','league','xG','xpts','scored','pressure'])
     return df
 
 
-@dispatch(str,int,int, str)
-def filter_data_set(league, year, chart_value, path):
-    
-    df= load_and_process(path)
-    
-    df1=df[df['year']==year]
-    df2=df1[df1['league']==league]
-    df3=df2[df2['position']==1]
-
-    xG=[]
-
-    a= (float)(df3['xG'])
-    xG.append(a)
-    for i in range(0,19):
-        xG.append(a)
-
-    df4=df2[df2['xG'].values >= xG]
-        
-    return df4
-
-@dispatch(str,int, str)
+#method to show only those teams from a specific year and league that have higher xG than the winning team
 def filter_data_set(league, year, path):
     
+    #clean and format the data before working on it
     df= load_and_process(path)
     
+    #conditions to extract the data from a specific league and year
     df1=df[df['year']==year]
     df2=df1[df1['league']==league]
     df3=df2[df2['position']==1]
-
+    
+    #makes a new list with all the xG values so that xG values can be compared
     xG=[]
-
     a= (float)(df3['xG'])
     xG.append(a)
     for i in range(0,19):
         xG.append(a)
-
+    
+    #returns only those teams in the year and league that have xG greater than the winning team
     df4=df2[df2['xG'].values >= xG]
-    display(df4)
         
     return df4
 
+#method to plot bar graphs
 def bar_plot(ax, data, colors=None, total_width=0.8, single_width=1, legend=True, chart_value=None):
     
+    #list contains the positions of all the teams from the data that is passed
     list=[]
+    
+    #x_pos contains the names of all teams in the order to label the axis of the plot properly
     x_pos= data['team']
     for i in range(0,len(data['position'])):
         list.append(i)
     s= pd.Series(list)
     
+    #condition to drop the required parameters according to the requirements of the graph
     if chart_value == 1:
         data= team_effect_parameters(data)
         plt.title('Team\'s effect on opponent (xG, scored, pressure)')
@@ -175,11 +209,15 @@ def bar_plot(ax, data, colors=None, total_width=0.8, single_width=1, legend=True
         ax.legend(bars, data.keys())
     
     plt.xticks(s,x_pos)
-
+    
+    #adds proper label to the plot in order to increase readability
     plt.xlabel('Teams')
     plt.ylabel('Values')
 
+    #Citation: https://stackoverflow.com/questions/14270391/python-matplotlib-multiple-bars/14270539
 
+    
+#method to extract data for a specific league and year
 @dispatch(str,int, str)
 def data_filter(league,year, path):
     df1 = load_and_process(path)
@@ -190,6 +228,8 @@ def data_filter(league,year, path):
     
     return df3
 
+
+#method to extract data for a specific league only
 @dispatch(str,str)
 def data_filter(league, path):
     df1 = load_and_process(path)
@@ -199,6 +239,7 @@ def data_filter(league, path):
     
     return df2
 
+#method to extract data of teams that have the same position as the passed parameter
 @dispatch(int,str)
 def data_filter(pos, path):
     df1 = load_and_process(path)
