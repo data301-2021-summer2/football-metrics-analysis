@@ -76,7 +76,41 @@ def data_filter(league,path):
     av = {'League':league, 'pts': df2['pts'].mean(), 'xG':df2['xG'].mean(), 'xGA':df2['xGA'].mean(), 'ppda_coef':df2['ppda_coef'].mean(), 'oppda_coef':df2['oppda_coef'].mean(), 'deep':df2['deep'].mean(), 'deep_allowed':df2['deep_allowed'].mean()}
     
     return av
- 
+
+def weighted_av_league(path):
+    #we are creating a dataframe has the average values of each metric for each league
+    #find the average values for each league and append them to new dataframe
+    df_av = pd.DataFrame(data_filter("La_liga", path), index=[0])
+    df_av = df_av.append(data_filter("EPL", path), ignore_index=True)
+    df_av = df_av.append(data_filter("Bundesliga", path), ignore_index=True)
+    df_av = df_av.append(data_filter("Serie_A", path), ignore_index=True)
+    df_av = df_av.append(data_filter("Ligue_1", path), ignore_index=True)
+    
+    #We are calculating an Offensive and Defensive Weighted Average and adding these values as a new column
+    #Offensive Metrics: xG, ppda_coef, deep
+    #Defensive Metrics: xGA, oppda_coef, deep_allowed
+    df_av['Offensive W_Average'] = 0.45*df_av['xG'] + 0.25*df_av['ppda_coef'] + 0.3*df_av['deep']
+    df_av['Defensive W_Average'] = 0.4*df_av['xGA'] + 0.3*df_av['oppda_coef'] + 0.3*df_av['deep_allowed']
+    
+    return df_av
+
+def weighted_av_top(path):
+    #we are creating that has the average values of each metric for the winners of each league
+    #find the average values for the winners of each league and add them into a new dataframe
+    df_top = pd.DataFrame(data_filter("La_liga",1, path), index=[0])
+    df_top = df_top.append(data_filter("EPL",1, path), ignore_index=True)
+    df_top = df_top.append(data_filter("Bundesliga",1, path), ignore_index=True)
+    df_top = df_top.append(data_filter("Serie_A",1, path), ignore_index=True)
+    df_top = df_top.append(data_filter("Ligue_1",1, path), ignore_index=True)
+    
+    #We are calculating an Offensive and Defensive Weighted Average and adding these values as a new column
+    #Offensive Metrics: xG, ppda_coef, deep
+    #Defensive Metrics: xGA, oppda_coef, deep_allowed
+    df_top['Offensive W_Average'] = 0.45*df_top['xG'] + 0.25*df_top['ppda_coef'] + 0.3*df_top['deep']
+    df_top['Defensive W_Average'] = 0.4*df_top['xGA'] + 0.3*df_top['oppda_coef'] + 0.3*df_top['deep_allowed']
+    
+    return df_top
+
 def weighted_av(path):
     #we are creating a dataframe has the average values of each metric for each league
     #find the average values for each league and append them to new dataframe
