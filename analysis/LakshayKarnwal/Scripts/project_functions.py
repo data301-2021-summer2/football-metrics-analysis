@@ -1,6 +1,7 @@
 import pandas as pd
 from multipledispatch import dispatch
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def load_and_process(path):
@@ -79,6 +80,7 @@ def weighted_avg(league,year,path):
     #plots the bar graph from the dataframe
     fig, ax = plt.subplots() 
     bar_plot(ax, df1, total_width=0.3, single_width=0.7, chart_value=3,colors=colors1)
+    sns.despine()
    
     #displays the graph
     display(df2)
