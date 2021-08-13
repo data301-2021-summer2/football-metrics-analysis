@@ -263,6 +263,23 @@ def all_avg_net(path):
     return df1
 
 
+def pie_def(parameters,oppo_effect_weights):
+    
+    data=list(zip(parameters,oppo_effect_weights))
+    df1=pd.DataFrame(data,columns=['parameter','weight'])
+    
+    #display(df1)
+    return df1
+
+def pie_attack(parameters,team_effect_weights):
+    
+    data=list(zip(parameters,team_effect_weights))
+    df1=pd.DataFrame(data,columns=['parameter','weight'])
+    
+    #display(df1)
+    return df1
+
+
 
 #method to drop columns and keep those variables that are involved in the team's effect on opponent calculation
 def team_effect_parameters(df):
@@ -370,7 +387,9 @@ def bar_plot(ax, data, colors=None, total_width=0.8, single_width=1, legend=True
     plt.ylabel('Values')
     
     plt.rcParams['figure.figsize']= (10,6)
-    plt.rcParams['font.family'] = 'sans_serif'
+    plt.rcParams['font.family'] = 'serif'
+    
+    sns.despine()
 
     #Citation: https://stackoverflow.com/questions/14270391/python-matplotlib-multiple-bars/14270539
 
