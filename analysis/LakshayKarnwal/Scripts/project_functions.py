@@ -50,14 +50,14 @@ def all_cases(path):
                 df1= filter_data_set(l,i,path)
                 df1=pd.concat([df,df1])
             
-    #display(df1)
-    df1.to_csv (r'../data/processed/processed_all_cases.csv', index = False, header=True)
+    #df1.to_csv (r'../data/processed/processed_all_cases.csv', index = False, header=True)
     
     return df1
 
 
 #method to plot 3d pie charts
 def plot_pie(values, labels):
+    
     #adds the explode effect to the 3d pie chart
     explode = (0, 0.1, 0)
     
@@ -75,11 +75,8 @@ def plot_pie(values, labels):
     plt.tight_layout()
     
 
-#method to find out the weighted team's effect, opponent's effect , and net effect of the teams
-def weighted_avg_attack(league,year,path):
-    
-    #setting up different colors for different graphs
-    #colors1 = ['#ff9999','#99ff99', '#B7C3F3']   
+#method to find out team's effect on opponent
+def weighted_avg_attack(league,year,path):   
     
     #method call to show only those teams from a specific year and league that have higher xG than the winning team
     df= filter_data_set(league,year,path)
@@ -96,21 +93,9 @@ def weighted_avg_attack(league,year,path):
     data = list(zip(team, position, avg,l,y))
     df1= pd.DataFrame(data,columns=['team','position','avg','league','year'])
     
-    #changes labels of the graph to increase readability
-    #df2=df1.style.set_table_attributes("style='display:inline'").set_caption('Weighted avg. of team'+'s effect on opponent')
-    
-    #plots the bar graph from the dataframe
-#     fig, ax = plt.subplots() 
-#     bar_plot(ax, df1, total_width=0.3, single_width=0.7, chart_value=3,colors=colors1)
-#     sns.despine()
-   
-    #displays the graph
-    #display(df2)
-    #plt.show()
-    
     return df1
     
-    
+#method to find out opponent's effect on team    
 def weighted_avg_def(league, year, path):
     
     #colors2 = ['#99ff99']
@@ -129,23 +114,10 @@ def weighted_avg_def(league, year, path):
     data=list(zip(team, position, avg,l,y))
     df3=pd.DataFrame(data,columns=['team','position','avg','league','year'])
     
-    #changes labels of the graph to increase readability
-    #df4=df3.style.set_caption('Weighted avg. of opponent'+'s effect on team')
-    
-    #plots the bar graph from the dataframe
-#     fig, ax = plt.subplots()
-#     bar_plot(ax, df3, total_width=0.3, single_width=0.7, chart_value=3,colors=colors2)
-    
-    #displays the graph
-    #display(df4)
-    #plt.show()
-    
     return df3
     
-
+#method to find out team's net effect
 def weighted_avg_net(league, year, path):
-    
-    #colors3 = ['#B7C3F3']
     
     #method call to show only those teams from a specific year and league that have higher xG than the winning team
     df= filter_data_set(league,year,path)
@@ -163,40 +135,14 @@ def weighted_avg_net(league, year, path):
     a=df1['avg']
     b=df3['avg']
     
-    #display(df1)
-    #display(df3)
-    
-#     net=[]
-#     for i in range(len(df)):
-#         net=df1['avg']-df3['avg']
-    
-    #a=((weighted_avg_attack(league,year,path)).data)['avg']
-    #df1=['avg']
-    #a=df1['avg']
-    #df3=((weighted_avg_def(league,year,path).data)['avg']
-    #b=((weighted_avg_def(league,year,path).data)['avg']
-    #b=df3['avg']
-    
-    #net=df1['avg']-df3['avg']
     net=a-b
     
     data=list(zip(team, position, net,l,y))
     df3=pd.DataFrame(data,columns=['team','position','net','league','year'])
     
-    #changes labels of the graph to increase readability
-    #df4=df3.style.set_table_attributes("style='display:inline'").set_caption('Net effect of each team')
-    
-    #plots the bar graph from the dataframe
-#     fig, ax = plt.subplots()
-#     bar_plot(ax, df3, total_width=0.3, single_width=0.7, chart_value=3, colors=colors3)
-    
-    #displays the graph
-    #display(df4)
-    #plt.show()
-    
     return df3
 
-
+#method to concatenate the weighted team's effect into a single dataframe
 def all_avg_attack(path):
     
     leagues=['EPL','Serie_A','Ligue_1','La_liga']
@@ -212,13 +158,13 @@ def all_avg_attack(path):
             else:
                 df1= weighted_avg_attack(l,i,path)
                 df1=pd.concat([df,df1])
-            
-    #display(df1)
+
     #df1.to_csv (r'../data/processed/processed_avg_attack.csv', index = False, header=True)
     
     return df1
-    
 
+
+#method to concatenate the weighted opponent's effect into a single dataframe
 def all_avg_def(path):
     
     leagues=['EPL','Serie_A','Ligue_1','La_liga']
@@ -235,12 +181,12 @@ def all_avg_def(path):
                 df1= weighted_avg_def(l,i,path)
                 df1=pd.concat([df,df1])
             
-    #display(df1)
     #df1.to_csv (r'../data/processed/processed_avg_def.csv', index = False, header=True)
     
     return df1
 
 
+#method to concatenate the weighted net effect of team into a single dataframe
 def all_avg_net(path):
     
     leagues=['EPL','Serie_A','Ligue_1','La_liga']
@@ -257,12 +203,12 @@ def all_avg_net(path):
                 df1= weighted_avg_net(l,i,path)
                 df1=pd.concat([df,df1])
             
-    #display(df1)
     #df1.to_csv (r'../data/processed/processed_avg_net.csv', index = False, header=True)
     
     return df1
 
 
+#method to plot the pie chart using the values
 def pie_def(parameters,oppo_effect_weights):
     
     data=list(zip(parameters,oppo_effect_weights))
@@ -271,6 +217,7 @@ def pie_def(parameters,oppo_effect_weights):
     #display(df1)
     return df1
 
+#method to plot the pie chart using the values
 def pie_attack(parameters,team_effect_weights):
     
     data=list(zip(parameters,team_effect_weights))
@@ -278,7 +225,6 @@ def pie_attack(parameters,team_effect_weights):
     
     #display(df1)
     return df1
-
 
 
 #method to drop columns and keep those variables that are involved in the team's effect on opponent calculation
